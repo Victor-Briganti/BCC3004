@@ -1,62 +1,65 @@
-# Principios SOLID em DART
+# Padrões de Projeto
 
-Este é um repositório dedicado ao curso de Engenharia de Software(BCC3004) da UTFPR(Universidade Tecnológica Federal do Paraná).
-O objetivo deste é trazer 4 principíos SOLID e exclicá-los usando uma linguagem de programção, no caso a escolhida foir Dart.
+Um padrão de projeto é uma solução típica para um problema recorrente no desenvolvimento de software. Funciona como um modelo que pode ser adaptado e aplicado em diferentes contextos para resolver problemas específicos de projeto. Não é um código específico, mas um conceito geral que descreve uma abordagem para resolver um problema.
 
-Os principios que são demonstrados neste repositório são:
+Existem três grupos principais de padrões de projeto:
 
-1. **Princípio da Inversão de Dependência (DIP):** Este princípio estabelece que os módulos de alto nível não devem depender diretamente dos módulos de baixo nível. Em vez disso, ambos os níveis devem depender de abstrações. Isso promove um maior desacoplamento entre os diferentes componentes de um sistema, facilitando a manutenção, extensão e teste de cada módulo de forma independente.
+- Padrões Criacionais: Eles lidam com mecanismos de criação de objetos, aumentando a flexibilidade e a reutilização de código. Exemplos incluem _Singleton_, _Factory Method_ e _Abstract Factory_.
 
-2. **Princípio da Segregação de Interfaces (ISP):** O ISP afirma que as interfaces devem ser específicas para os clientes que as utilizam, evitando interfaces "gordas" que contêm mais funcionalidades do que o necessário. Isso ajuda a evitar que os clientes dependam de métodos ou comportamentos que não precisam, promovendo uma melhor modularidade e evitando acoplamento excessivo.
+- Padrões Estruturais: Estes padrões explicam como montar objetos e classes em estruturas maiores, mantendo a flexibilidade e a eficiência. Exemplos incluem _Adapter_, _Decorator_ e _Proxy_.
 
-3. **Princípio Aberto-Fechado (OCP):** O OCP postula que as entidades de software devem ser abertas para extensão, mas fechadas para modificação. Isso significa que, ao adicionar novas funcionalidades, você não deve precisar alterar o código existente, mas sim estender seu comportamento através de mecanismos como herança, polimorfismo ou composição. Isso promove um código mais robusto, flexível e de fácil manutenção.
+- Padrões Comportamentais: Eles se concentram na comunicação eficiente e na atribuição de responsabilidades entre objetos. Exemplos incluem _Observer_, _Visitor_, _Strategy_ e _Command_.
 
-4. **Princípio da Substituição de Liskov (LSP):** O LSP enfatiza que objetos de uma superclasse devem poder ser substituídos por objetos de suas subclasses sem que o comportamento esperado do programa seja alterado. Em outras palavras, as subclasses devem ser substituíveis por suas superclasses em qualquer lugar do código, garantindo consistência e previsibilidade no sistema. Isso é fundamental para a correta aplicação de herança e polimorfismo.
+## _Singleton_(Criacional)
 
-### Princípio da Inversão de Dependência (DIP)
+O _singleton_ é um padrão de projeto que garante que uma classe tenha apenas uma instância e fornece um ponto de acesso global para a mesma.
 
-Este princípio estabelece que os módulos de alto nível não devem depender diretamente dos módulos de baixo nível. Em vez disso, ambos os níveis devem depender de abstrações. Isso promove um desacoplamento entre os diferentes componentes do sistema, aumentando a flexibilidade, reutilização e manutenção do código. Ao aderir ao DIP, as mudanças nos módulos de baixo nível não devem impactar os módulos de alto nível, permitindo que diferentes implementações possam ser facilmente substituídas sem alterar o comportamento dos módulos de alto nível.
+Dessa forma este modelo, acaba por resolver dois problemas: o de assegurar que uma clase tenha uma única instância e o de prover um ponto de acesso global para está instância. Isso é principalmente útil no acesso a recursos compartilhados e evitar a criação de múltiplas instâncias de uma mesma classe.
 
-O [primeiro código](dependency-inversion/wrong.dart) possui a classe `UsuarioRepositorio`, onde há um método que salva o usuário no banco de dados. É possível perceber que o DIP está sendo violado nesta classe devido o acesso direto ao banco de dados o que a torna dependente de uma classe concreta. Isso torna o código menos flexível e mais difícil de manter, pois qualquer mudança na implementação do banco de dados exigiria modificações na classe UsuarioRepositorio.
+Sua estrutura geralmente consiste em uma única classe com um método estático `getInstance()` que retorna está única instância da classe e um construtor privado para impedir a criação direta do objeto.
 
-Quando olhamos para a [correção](dependency-inversion/correct.dart) temos a implementação da interface `IDatabase` que abstrai essa conexão com o banco de dados. Isso permite que diferentes implementações de banco de dados possam ser facilmente substituídas sem impactar o código do `UsuarioRepositorio`, seguindo assim o DIP.
+#### Exemplo
 
-### Princípio da Segregação de Interfaces (ISP)
+Um simples exemplo do uso deste padrão, pode ser observado em um gerenciador de configurações que armazena informações importantes sobre todo o sistema. A representação dessa classe pode ser observada na imagem abaixo:
 
-Este princípio enfatiza que as interfaces devem ser específicas e não devem forçar as classes a implementar métodos que não precisam. Em vez disso, as interfaces devem ser segregadas para atender às necessidades específicas das classes que as implementam. Isso promove um design mais coeso e modular, reduzindo o acoplamento entre as classes e tornando o código mais flexível e fácil de manter. Em essência, o ISP busca garantir que as classes sejam responsáveis apenas pelos métodos que realmente precisam implementar.
+![singleton](singleton/uml/singleton.png)
 
-No [primeiro código](interface-segregation/wrong.dart), temos a interface `IUsuarioPerfil`, que contém alguns métodos CRUD que são disponibilizados aos usuários. No entanto, há um problema quando olhamos para a classe `UsuarioFuncionario`. O registro de usuário não deve ser feito por essa classe, mas por outra parte do sistema. Nesse caso, como a classe está implementando a interface, ela não pode deixar de implementar o método `registrar`, mesmo que seja algo que não pode ser usado. Isso torna o código confuso e pode trazer problemas para futuros contribuidores que não saibam dessa regra de negócio.
+**OBS:** Na linguagem go a implementação das classes é feita de maneira diferente do habitual em outras linguagens. Logo o modelo acima sofreu alterações antes de ser implementado.
 
-No [código corrigido](interface-segregation/correct.dart), a interface é dividida em duas subinterfaces: `IUsuarioPassageiro` e `IUsuarioFuncionario`. Dessa forma, não apenas temos uma divisão mais clara entre as classes do sistema, como também é possível gerenciar o que cada interface deve ou não implementar sem quebrar o princípio da segregação de interface.
+## _Adapter_(Estutural)
 
-### Princípio Aberto-Fechado
+O padrão _adapter_ é usado quando há necessidade de fazer interfaces incompatíveis trabalharem juntos.
 
-Este princípio enfatiza que as interfaces devem estar abertas para extensão, mas fechadas para modificação. Isso significa que você pode adicionar novas funcionalidades sem precisar alterar o código existente, tornando o software mais flexível e modular.
+Um adaptor encobre um dos objetos para esconder a complexidade da conversão. O objeto encobrido não fica ciente desta adaptação. Um exemplo simples disso seria encobrir um objeto que opera em metros e quilômetros para um outro que converte todos os dados para unidades imperiais tais como pés e milhas.
 
-No [primeiro código](open-closed/wrong.dart), temos a interface `PedidoServico`, que é responsável por realizar o pedido conforme a classe passada via parâmetro. Nele, temos o seguinte bloco de código:
+A implementação deste adaptor se dá como uma classe _wrapper_ que armazena uma referência para a classe de serviço. Nesta classe _wrapper_ é implementado todas as interfaces de comunicação do cliente e o serviço, todas as chamadas que o cliente faria a classe de serviço, são realizadas ao adaptor que realiza as alterações necessárias e delegar as chamadas para a interface de serviço.
 
+#### Exemplo
 
-```dart
-  void pedido(dynamic pedido) {
-    if (pedido is PizzaPedido) {
-      pedido.pedido();
-    } else if (pedido is MarmitaPedido) {
-      pedido.pedido();
-    } else {
-      throw Exception('Pedido desconhecido');
-    }
-  }
-```
+Um simples exemplo do uso deste padrão, pode ser observado em uma aplicação de pagamentos que suporta diferentes moedas. Isso pode ser observado na imagem abaixo, que descreve o modelo de classes para pagamentos em dolár e real:
 
-Neste bloco, é possível perceber que para cada novo pedido adicionado, será necessário alterar esta funcionalidade para que ela possa atender às novas demandas. Outro grande problema está no fato de que a implementação da maneira atual aceita parâmetros dinâmicos, o que força o uso de exceções, tornando o código mais instável.
+![adapter](adapter/uml/adapter.png)
 
-Isto foi [corrigido](interface-segregation/correct.dart) utilizando uma interface padronizada com o nome `IPedidoMetodo`, que obriga a implementação do método `pedido`. Dessa forma, conseguimos melhorar o código, deixando mais claro o que é aceito e como é a interface de utilização desses pedidos. Além de remover o `if` que erá necessário para verificação de tipos.
+## _Visitor_(Comportamental)
 
-### Princípio da Substituição de Liskov
+O padrão de projeto visitor é uma técnica útil para separar algoritmos dos objetos sobre os quais eles operam, especialmente em situações onde há hierarquia de classes e não é possível modificá-las diretamente.
 
-Proposto por Barbara Liskov, este princípio enfatiza que objetos de uma classe derivada devem ser capazes de substituir objetos de uma classe base sem quebrar a integridade do programa. Em outras palavras, se S é um subtipo de T, então os objetos do tipo T podem ser substituídos por objetos do tipo S sem alterar as propriedades desejadas do programa. Isso promove a reutilização de código, facilita a manutenção e aumenta a flexibilidade do sistema.
+Basicamente este padrão cria uma classe(visitante) onde para cada uma das outras classes que ela interage um método diferente é feito.
 
+Este padrão é implementado seguindo os seguintes passos:
 
-Este princípio pode ser melhor observado ao examinarmos o [primeiro código](/liskov/wrong.dart), onde temos a classe `Retângulo` estendida pela classe `Quadrado`. À primeira vista, a extensão parece lógica, já que um quadrado é um tipo especial de retângulo. No entanto, ao analisarmos as implementações, vemos que, para que um quadrado se mantenha como um quadrado, seus lados devem sempre ter o mesmo valor. Isso requer verificações adicionais e torna as implementações de `setLargura` e `setAltura` problemáticas, pois elas precisariam alterar ambos os lados do quadrado simultaneamente. Assim temos que este código acaba por violar o princípio de substituição.
+1. Interface do Visitante (Visitor Interface): Define os métodos visitantes que podem receber elementos concretos da estrutura de objetos como argumentos.
 
-A [correção](liskov/correct.dart) deste código envolve a introdução de uma interface `Formato`, que fornece um ponto comum entre as classes `Retângulo` e `Quadrado` sem criar conflitos em suas implementações. Essa separação permite o uso contínuo das classes onde o método `calcularArea` é necessário, garantindo, ao mesmo tempo, que o manuseio do tamanho de cada formato seja tratado de forma específica em suas respectivas implementações concretas.
+2. Visitante Concreto (Concrete Visitor): Implementa as diferentes variantes do mesmo comportamento para diferentes elementos concretos da estrutura de objetos.
+
+3. Interface do Elemento (Element Interface): Declara um método para "aceitar" visitantes. Este método redireciona a chamada para o método visitante apropriado que corresponde à classe atual do elemento.
+
+4. Elemento Concreto (Concrete Element): Implementa o método de aceitação e redireciona a chamada para o método visitante apropriado.
+
+5. Cliente (Client): Utiliza os objetos visitantes para executar operações sobre os elementos da estrutura de objetos, sem conhecer as classes concretas dos elementos.
+
+#### Exemplo
+
+Uma situação real onde podemos encontrar este tipo de padrão, seria em um sistema de exportação de documentos onde temos diferentes tipos de documentos, como documentos de texto, planilhas e apresentações. Queremos implementar uma funcionalidade de exportação para diferentes formatos, como PDF por exemplo, sem a necessidade de modificar as classes existentes. A imagem abaixo, ilustra o como esse modelo seria implementado:
+
+![visitor](visitor/uml/visitor.png)
