@@ -63,3 +63,7 @@ Este padrão é implementado seguindo os seguintes passos:
 Uma situação real onde podemos encontrar este tipo de padrão, seria em um sistema de exportação de documentos onde temos diferentes tipos de documentos, como documentos de texto, planilhas e apresentações. Queremos implementar uma funcionalidade de exportação para diferentes formatos, como PDF por exemplo, sem a necessidade de modificar as classes existentes. A imagem abaixo, ilustra o como esse modelo seria implementado:
 
 ![visitor](visitor/uml/visitor.png)
+
+
+
+Isto é apenas um teste ignore
